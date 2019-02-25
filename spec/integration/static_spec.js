@@ -20,4 +20,15 @@ describe("routes : static", () => {
         });
 
     });
+
+    describe("GET /about", () => {
+        it("Should return status code 200 on /about"), () => {
+            console.log('in');
+
+            request.get(base, (err, res, body) => {
+                expect(res.statusCode).toBe(200);
+                done();
+            })
+        }
+    })
 });
