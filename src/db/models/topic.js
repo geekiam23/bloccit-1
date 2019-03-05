@@ -5,12 +5,19 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.STRING
   }, {});
 
+  // associations can be defined here
+
   Topic.associate = function (models) {
     Topic.hasMany(models.Banner, {
       foreignKey: "topicId",
       as: "banners",
     });
-    // associations can be defined here
   };
-  return Topic;
-};
+
+  Topic.associate = function (models) {
+    Topic.hasMany(models.Rule, {
+      foreignKey: "topicId",
+      as: "rules",
+    });
+  };
+}
