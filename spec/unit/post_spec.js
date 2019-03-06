@@ -26,6 +26,7 @@ describe("Post", () => {
                     })
                         .then((post) => {
                             this.post = post;
+                            console.log('done')
                             done();
                         });
                 })
@@ -44,7 +45,7 @@ describe("Post", () => {
             Post.create({
                 title: "Pros of Cryosleep during the long journey",
                 body: "1. Not having to answer the 'are we there yet?' question.",
-                // topicId: this.topic.id
+                topicId: this.topic.id
             })
                 .then((post) => {
 
@@ -79,7 +80,6 @@ describe("Post", () => {
 
     });
 
-
     describe("#setTopic()", () => {
 
         it("should associate a topic and a post together", (done) => {
@@ -90,7 +90,7 @@ describe("Post", () => {
                 description: "1. The Wi-Fi is terrible"
             })
                 .then((newTopic) => {
-
+                    console.log('hi')
                     // #2
                     expect(this.post.topicId).toBe(this.topic.id);
                     // #3
@@ -109,14 +109,16 @@ describe("Post", () => {
     describe("#getTopic()", () => {
 
         it("should return the associated topic", (done) => {
-   
-          this.post.getTopic()
-          .then((associatedTopic) => {
-            expect(associatedTopic.title).toBe("Expeditions to Alpha Centauri");
-            done();
-          });
-   
+
+            this.post.getTopic()
+                .then((associatedTopic) => {
+                    expect(associatedTopic.title).toBe("Expeditions to Alpha Centauri");
+                    done();
+                });
+
         });
-   
-      });
+
+    });
+
+
 });

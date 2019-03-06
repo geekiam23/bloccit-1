@@ -29,7 +29,6 @@ describe("routes : topics", () => {
 
   describe("GET /topics", () => {
 
-    it("should return a status code 200", (done) => {/* spec implementation */ });
     it("should return a status code 200 and all topics", (done) => {
 
       //#3
