@@ -1,6 +1,16 @@
 const Topic = require("./models").Topic;
 
 module.exports = {
+  getPosts(id, callback) {
+    return Post.findById(id)
+
+      .then((posts) => {
+        callback(null, posts);
+      })
+      .catch((err) => {
+        callback(err);
+      })
+  },
 
   //#1
   getAllTopics(callback) {
