@@ -1,6 +1,7 @@
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
+const Flair = require("../../src/db/models").Flair;
 
 describe("Post", () => {
 
@@ -8,6 +9,7 @@ describe("Post", () => {
         //#1
         this.topic;
         this.post;
+        this.flair;
         sequelize.sync({ force: true }).then((res) => {
 
             //#2
@@ -22,7 +24,8 @@ describe("Post", () => {
                         title: "My first visit to Proxima Centauri b",
                         body: "I saw some rocks.",
                         //#4
-                        topicId: this.topic.id
+                        topicId: this.topic.id,
+                        flairId: this.flair.id
                     })
                         .then((post) => {
                             this.post = post;
@@ -45,7 +48,8 @@ describe("Post", () => {
             Post.create({
                 title: "Pros of Cryosleep during the long journey",
                 body: "1. Not having to answer the 'are we there yet?' question.",
-                topicId: this.topic.id
+                topicId: this.topic.id,
+                flairId: this.flair.id
             })
                 .then((post) => {
 
@@ -73,6 +77,7 @@ describe("Post", () => {
 
                     expect(err.message).toContain("Post.body cannot be null");
                     expect(err.message).toContain("Post.topicId cannot be null");
+                    expect(err.message).toContain("Post.flairId cannot be null");
                     done();
 
                 })

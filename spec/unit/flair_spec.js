@@ -2,6 +2,7 @@ const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
 const Flair = require("../../src/db/models").Flair;
+
 describe("Post", () => {
 
   beforeEach((done) => {
