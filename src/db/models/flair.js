@@ -1,11 +1,11 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Post = sequelize.define('Post', {
-    title: {
+  var Flair = sequelize.define('Flair', {
+    name: {
       type: DataTypes.STRING,
       allowNull: false
     },
-    body: {
+    color: {
       type: DataTypes.STRING,
       allowNull: false
     },
@@ -13,24 +13,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    flairId:{
+    postId: {
       type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {});
-  Post.associate = function (models) {
+  Flair.associate = function (models) {
 
     // associations can be defined here
-    Post.belongsTo(models.Topic, {
-      foreignKey: "topicId",
+    Flair.belongsTo(models.Post, {
+      foreignKey: "postId",
       onDelete: "CASCADE"
-    });
+    })
   };
-
-    // Post.hasOne(models.Flair, {
-    //   foreignKey: "flairId",
-    //   onDelete: "CASCADE"
-    // })
-
-  return Post;
+  return Flair;
 };
