@@ -90,7 +90,6 @@ describe("Post", () => {
                 description: "1. The Wi-Fi is terrible"
             })
                 .then((newTopic) => {
-                    console.log('hi')
                     // #2
                     expect(this.post.topicId).toBe(this.topic.id);
                     // #3
