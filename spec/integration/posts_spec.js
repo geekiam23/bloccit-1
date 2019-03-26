@@ -1,7 +1,7 @@
 const request = require("request");
 const server = require("../../src/server");
 const base = "http://localhost:3000/topics";
-
+const User = require("../../src/db/models").User;
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
@@ -11,31 +11,36 @@ describe("routes : posts", () => {
   beforeEach((done) => {
     this.topic;
     this.post;
+    this.user;
 
     sequelize.sync({ force: true }).then((res) => {
-
-      //#1
-      Topic.create({
-        title: "Winter Games",
-        description: "Post your Winter Games stories."
+      User.create({
+        email: "starman@tesla.com",
+        password: "Trekkie4lyfe"
       })
-        .then((topic) => {
-          this.topic = topic;
+        .then((user) => {
+          this.user = user;
 
-          Post.create({
-            title: "Snowball Fighting",
-            body: "So much snow!",
-            topicId: this.topic.id
-          })
-            .then((post) => {
-              this.post = post;
+          Topic.create({
+            title: "Winter Games",
+            description: "Post your Winter Games stories.",
+            posts: [{
+              title: "Snowball Fighting",
+              body: "So much snow!",
+              userId: this.user.id
+            }]
+          }, {
+              include: {
+                model: Post,
+                as: "posts"
+              }
+            })
+            .then((topic) => {
+              this.topic = topic;
+              this.post = topic.posts[0];
               done();
             })
-            .catch((err) => {
-              console.log(err);
-              done();
-            });
-        });
+        })
     });
 
   });
@@ -171,29 +176,29 @@ describe("routes : posts", () => {
 
   it("should not create a new post that fails validations", (done) => {
     const options = {
-        url: `${base}/${this.topic.id}/posts/create`,
-        form: {
-            //#1
-            title: "a",
-            body: "b"
-        }
+      url: `${base}/${this.topic.id}/posts/create`,
+      form: {
+        //#1
+        title: "a",
+        body: "b"
+      }
     };
 
     request.post(options,
-        (err, res, body) => {
+      (err, res, body) => {
 
-            //#2
-            Post.findOne({ where: { title: "a" } })
-                .then((post) => {
-                    expect(post).toBeNull();
-                    done();
-                })
-                .catch((err) => {
-                    console.log(err);
-                    done();
-                });
-        }
+        //#2
+        Post.findOne({ where: { title: "a" } })
+          .then((post) => {
+            expect(post).toBeNull();
+            done();
+          })
+          .catch((err) => {
+            console.log(err);
+            done();
+          });
+      }
     );
-});
+  });
 
 });
