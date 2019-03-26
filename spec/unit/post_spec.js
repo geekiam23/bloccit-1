@@ -2,6 +2,7 @@ const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
 const User = require("../../src/db/models").User;
+const Vote = require("../../src/db/models").Vote;
 
 describe("Post", () => {
 
@@ -45,7 +46,7 @@ describe("Post", () => {
     describe("#create()", () => {
 
         it("should create a post object with a title, body, and assigned topic and user", (done) => {
-            //#1
+
             Post.create({
                 title: "Pros of Cryosleep during the long journey",
                 body: "1. Not having to answer the 'are we there yet?' question.",
@@ -54,7 +55,6 @@ describe("Post", () => {
             })
                 .then((post) => {
 
-                    //#2
                     expect(post.title).toBe("Pros of Cryosleep during the long journey");
                     expect(post.body).toBe("1. Not having to answer the 'are we there yet?' question.");
                     expect(post.topicId).toBe(this.topic.id);
@@ -74,7 +74,6 @@ describe("Post", () => {
             })
                 .then((post) => {
                     done();
-
                 })
                 .catch((err) => {
 
@@ -91,38 +90,19 @@ describe("Post", () => {
 
         it("should associate a topic and a post together", (done) => {
 
-            // #1
             Topic.create({
                 title: "Challenges of interstellar travel",
                 description: "1. The Wi-Fi is terrible"
             })
                 .then((newTopic) => {
-                    console.log('hi')
-                    // #2
                     expect(this.post.topicId).toBe(this.topic.id);
-                    // #3
                     this.post.setTopic(newTopic)
                         .then((post) => {
-                            // #4
                             expect(post.topicId).toBe(newTopic.id);
                             done();
 
                         });
                 })
-        });
-
-    });
-
-    describe("#getTopic()", () => {
-
-        it("should return the associated topic", (done) => {
-
-            this.post.getTopic()
-                .then((associatedTopic) => {
-                    expect(associatedTopic.title).toBe("Expeditions to Alpha Centauri");
-                    done();
-                });
-
         });
 
     });
@@ -163,6 +143,50 @@ describe("Post", () => {
 
         });
 
+    });
+
+    describe("#hasUpvoteFor()", () => {
+
+        it("should determine if the user has already upvoted the post", (done) => {
+            Vote.create({
+                value: 1,
+                userId: this.user.id,
+                postId: this.post.id
+            })
+                .then((vote) => {
+                    this.post.hasUpvoteFor(this.user.id)
+                        .then((res) => {
+                            expect(res).toBe(true);
+                            done();
+                        })
+                })
+                .catch((err) => {
+                    console.log(err);
+                    done();
+                });
+        })
+    });
+
+    describe("#hasDownvoteFor()", () => {
+
+        it("should determine if the user has already downvoted the post", (done) => {
+            Vote.create({
+                value: -1,
+                userId: this.user.id,
+                postId: this.post.id
+            })
+                .then((vote) => {
+                    this.post.hasDownvoteFor(this.user.id)
+                        .then((res) => {
+                            expect(res).toBe(true);
+                            done();
+                        })
+                })
+                .catch((err) => {
+                    console.log(err);
+                    done();
+                });
+        })
     });
 
 });

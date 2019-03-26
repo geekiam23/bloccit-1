@@ -1,7 +1,6 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
   var Post = sequelize.define('Post', {
-
     title: {
       type: DataTypes.STRING,
       allowNull: false
@@ -20,7 +19,6 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {});
   Post.associate = function (models) {
-
     // associations can be defined here
     Post.belongsTo(models.Topic, {
       foreignKey: "topicId",
@@ -41,19 +39,16 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: "postId",
       as: "votes"
     });
+  };
+
+  Post.prototype.hasUpvoteFor = function (userId) {
+    return this.getVotes({ where: { userId, postId: this.id, value: 1 } }).then(votes => votes.length > 0 ? true : false)
 
   };
 
-  Post.prototype.getPoints = function () {
-
-    // #1
-    if (this.votes.length === 0) return 0
-
-    // #2
-    return this.votes
-      .map((v) => { return v.value })
-      .reduce((prev, next) => { return prev + next });
-  };
+  Post.prototype.hasDownvoteFor = function (userId) {
+    return this.getVotes({ where: { userId, postId: this.id, value: -1 } }).then(votes => votes.length > 0 ? true : false)
+  }
 
   return Post;
 };
