@@ -46,21 +46,32 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Post.afterCreate((post, callback) => {
-      return models.Vote.upvote({ 
-        value: 1, 
-        userId: post.userId, 
-        postId: post.id 
+      return models.Vote.create({
+        value: 1,
+        userId: post.userId,
+        postId: post.id
       })
     });
 
     Post.afterCreate((post, callback) => {
-      return models.Favorite.create({ 
-        userId: post.userId, 
-        postId: post.id 
+      return models.Favorite.create({
+        userId: post.userId,
+        postId: post.id
       })
     });
 
+
   };
+
+  Post.addScope("lastFiveFor", (userId) => {
+    // #2
+    return {
+      where: { userId: userId },
+      // #3
+      limit: 5,
+      order: [["createdAt", "DESC"]]
+    }
+  });
 
   Post.prototype.hasUpvoteFor = function (userId) {
     return this.getVotes({ where: { userId, postId: this.id, value: 1 } }).then(votes => votes.length > 0 ? true : false)
