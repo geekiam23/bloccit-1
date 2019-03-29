@@ -11,22 +11,25 @@ module.exports = {
     app.use(passport.session());
 
     // #3
-    passport.use(new LocalStrategy({
-      usernameField: "email"
-    }, (email, password, done) => {
-      User.findOne({
-        where: { email }
-      })
-        .then((user) => {
+    passport.use(
+      new LocalStrategy(
+        {
+          usernameField: "email"
+        },
+        (email, password, done) => {
+          User.findOne({
+            where: { email }
+          })
+            .then((user) => {
 
-          // #4
-          if (!user || !authHelper.comparePass(password, user.password)) {
-            return done(null, false, { message: "Invalid email or password" });
-          }
-          // #5
-          return done(null, user);
-        })
-    }));
+              // #4
+              if (!user || !authHelper.comparePass(password, user.password)) {
+                return done(null, false, { message: "Invalid email or password" });
+              }
+              // #5
+              return done(null, user);
+            })
+        }));
 
     // #6
     passport.serializeUser((user, callback) => {
